@@ -12,6 +12,7 @@
     "@emotion/css": "^11.11.2",
     "@farcaster/hub-nodejs": "^0.10.6",
     "@farcaster/hub-web": "^0.6.3",
+    "@vercel/analytics": "^1.0.2",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "next": "13.4.19",
