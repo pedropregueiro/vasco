@@ -26,3 +26,21 @@ export const fetchCast = async (castHash) => {
       throw err;
     });
 };
+
+export const fetchUser = async (fid) => {
+  const params = new URLSearchParams({
+    api_key: process.env.NEYNAR_API_KEY,
+    fid,
+  });
+
+  return fetch(NEYNAR_V1_ENDPOINT + "/user?" + params)
+    .then((result) => {
+      return result.json();
+    })
+    .then((data) => {
+      return data.result.user;
+    })
+    .catch((err) => {
+      throw err;
+    });
+};

@@ -1,6 +1,5 @@
 import { fetchCast as fetchNeynarCast } from "@/src/hooks/neynar";
 import { fetchCast as fetchHubCast } from "@/src/hooks/hub";
-import { hexToBytes } from "viem";
 
 const CastAuthor = ({ cast }) => {
   const author = cast.author;
@@ -30,7 +29,7 @@ const CastBody = ({ cast }) => {
   );
 };
 
-export default async function Page({ params }) {
+export default async function Cast({ params }) {
   const neynarCast = await fetchNeynarCast(params.id);
   const hubCast = await fetchHubCast({
     hash: params.id,
