@@ -13,6 +13,7 @@ module.exports = (...args) => {
       new webpack.EnvironmentPlugin({
         FARCASTER_HUB_RPC_ENDPOINT: undefined,
         NEYNAR_API_KEY: undefined,
+        WARPCAST_API_TOKEN: undefined,
       }),
     ],
   };
