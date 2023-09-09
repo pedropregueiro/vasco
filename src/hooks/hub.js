@@ -20,7 +20,7 @@ export const fetchCast = async ({ hash, fid }) => {
     });
 };
 
-export const fetchUserData = async ({ fid }) => {
+export const fetchUserData = async (fid) => {
   return farcasterClient.getUserDataByFid({ fid }).then((result) => {
     if (result.isErr()) {
       throw result.error;
