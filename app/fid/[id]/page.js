@@ -28,7 +28,7 @@ export default async function Fid({ params }) {
         </Suspense>
       </div>
 
-      <div style={{ padding: "2rem" }}>
+      <div style={{ padding: "2rem 0" }}>
         <Suspense fallback={<div>Loading...</div>}>
           <HubUser fid={params.id} />
         </Suspense>

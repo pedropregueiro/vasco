@@ -5,13 +5,7 @@ const HubUser = async ({ fid }) => {
   const userSigners = await fetchUserSigners(fid);
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-        columnGap: "2rem",
-      }}
-    >
+    <div className="two-column-grid">
       <div>
         <h2>GetUserDataByFid</h2>
         <pre>{JSON.stringify(userData, null, 2)}</pre>
