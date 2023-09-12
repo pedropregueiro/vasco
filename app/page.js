@@ -47,7 +47,7 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            <p>Vitalik's cast</p>
+            <p>Random cast</p>
             <p
               style={{
                 color: "#222",
