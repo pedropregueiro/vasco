@@ -64,14 +64,7 @@ export default async function Cast({ params }) {
         <CastBody cast={neynarCast} />
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-          columnGap: "2rem",
-          padding: "2rem",
-        }}
-      >
+      <div className="two-column-grid">
         <div>
           <h2>Neynar</h2>
           <pre>{JSON.stringify(neynarCast, null, 2)}</pre>

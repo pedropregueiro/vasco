@@ -18,14 +18,7 @@ export default async function Fid({ params }) {
         </Suspense>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-          columnGap: "2rem",
-          padding: "2rem",
-        }}
-      >
+      <div className="two-column-grid">
         <Suspense fallback={<div>Loading...</div>}>
           <NeynarUser fid={params.id} />
         </Suspense>

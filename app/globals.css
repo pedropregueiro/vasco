@@ -23,3 +23,16 @@ pre {
   max-height: 50rem;
   overflow: auto;
 }
+
+.two-column-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 2rem;
+  padding: 2rem;
+}
+
+@media (max-width: 767px) {
+  .two-column-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
