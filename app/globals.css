@@ -20,4 +20,6 @@ pre {
   border-radius: 4px;
   white-space: pre-wrap;
   word-wrap: break-word;
+  max-height: 50rem;
+  overflow: auto;
 }
