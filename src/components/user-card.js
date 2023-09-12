@@ -1,15 +1,36 @@
 import { fetchUser as fetchNeynarUser } from "@/src/hooks/neynar";
+import Image from "next/image";
 
 const UserCard = async ({ fid }) => {
   const neynarUser = await fetchNeynarUser(fid);
 
   return (
-    <>
-      <h2>
-        {neynarUser.displayName} (@{neynarUser.username})
-      </h2>
-      <p>{neynarUser.profile.bio.text}</p>
-    </>
+    <div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "60px auto",
+          alignItems: "center",
+        }}
+      >
+        <Image
+          style={{ borderRadius: "50%" }}
+          src={neynarUser.pfp.url}
+          alt="pfp"
+          width={50}
+          height={50}
+        />
+        <div>
+          <p style={{ fontWeight: "bold", margin: "0.2rem" }}>
+            {neynarUser.displayName}{" "}
+            <span style={{ fontWeight: "normal" }}>
+              (@{neynarUser.username})
+            </span>
+          </p>
+          <p style={{ margin: "0.2rem" }}>{neynarUser.profile.bio.text}</p>
+        </div>
+      </div>
+    </div>
   );
 };
 

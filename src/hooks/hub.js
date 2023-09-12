@@ -1,4 +1,8 @@
-import { getSSLHubRpcClient, Message } from "@farcaster/hub-nodejs";
+import {
+  getSSLHubRpcClient,
+  Message,
+  OnChainEvent,
+} from "@farcaster/hub-nodejs";
 import { hexToBytes } from "viem";
 
 const farcasterClient = getSSLHubRpcClient(
@@ -32,5 +36,20 @@ export const fetchUserData = async (fid) => {
     });
 
     return jsonMessages;
+  });
+};
+
+export const fetchUserSigners = async (fid) => {
+  return farcasterClient.getOnChainSignersByFid({ fid }).then((result) => {
+    if (result.isErr()) {
+      throw result.error;
+    }
+
+    const events = result.value.events;
+    const jsonEvents = events.map((event) => {
+      return OnChainEvent.toJSON(event);
+    });
+
+    return jsonEvents;
   });
 };

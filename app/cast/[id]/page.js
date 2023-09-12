@@ -1,23 +1,37 @@
 import { fetchCast as fetchNeynarCast } from "@/src/hooks/neynar";
 import { fetchCast as fetchHubCast } from "@/src/hooks/hub";
 import { fetchCast as fetchWarpcastCast } from "@/src/hooks/warpcast";
+import Image from "next/image";
+import Link from "next/link";
 
 const CastAuthor = ({ cast }) => {
   const author = cast.author;
   const warpcastAuthorLink = `https://warpcast.com/${author.username}`;
 
   return (
-    <>
-      <p>{author.display_name || author.displayName}</p>
-      <a
-        href={warpcastAuthorLink}
-        target="_blank"
-        rel="noreferrer"
-        style={{ textDecoration: "none" }}
-      >
-        (@{author.username})
-      </a>
-    </>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "45px auto",
+        alignItems: "center",
+      }}
+    >
+      <Image
+        style={{ borderRadius: "50%" }}
+        src={author.pfp.url}
+        alt="pfp"
+        width={40}
+        height={40}
+      />
+      <div>
+        <Link href={`/fid/${author.fid}`}>
+          <p style={{ fontWeight: "bold", margin: "0.2rem" }}>
+            {author.displayName}{" "}
+            <span style={{ fontWeight: "normal" }}>(@{author.username})</span>
+          </p>
+        </Link>
+      </div>
+    </div>
   );
 };
 
@@ -40,35 +54,38 @@ export default async function Cast({ params }) {
 
   return (
     <div>
-      <h2>{neynarCast.hash}</h2>
-      <CastAuthor cast={neynarCast} />
-      <CastBody cast={neynarCast} />
-      <hr />
-      <a
-        href={`https://warpcast.com/${
-          neynarCast.author.username
-        }/${params.id.slice(0, 8)}`}
-        target="_blank"
-        rel="noreferrer"
+      <div
+        style={{
+          padding: "2rem",
+          backgroundColor: "rgb(245, 243, 228)",
+        }}
       >
-        Warpcast
-      </a>
-      <a
-        href={`https://phrasetown.com/app/cast/${params.id}`}
-        target="_blank"
-        rel="noreferrer"
+        <CastAuthor cast={neynarCast} />
+        <CastBody cast={neynarCast} />
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+          columnGap: "2rem",
+          padding: "2rem",
+        }}
       >
-        Phrasetown
-      </a>
-      <hr />
-      <h2>Neynar</h2>
-      <pre>{JSON.stringify(neynarCast, null, 2)}</pre>
-      <hr />
-      <h2>Warpcast</h2>
-      <pre>{JSON.stringify(warpcastCast, null, 2)}</pre>
-      <hr />
-      <h2>Hub (GetCast)</h2>
-      <pre>{JSON.stringify(hubCast, null, 2)}</pre>
+        <div>
+          <h2>Neynar</h2>
+          <pre>{JSON.stringify(neynarCast, null, 2)}</pre>
+        </div>
+        <div>
+          <h2>Warpcast</h2>
+          <pre>{JSON.stringify(warpcastCast, null, 2)}</pre>
+        </div>
+      </div>
+
+      <div style={{ padding: "2rem" }}>
+        <h2>Hub (GetCast)</h2>
+        <pre>{JSON.stringify(hubCast, null, 2)}</pre>
+      </div>
     </div>
   );
 }
