@@ -21,6 +21,9 @@ export const fetchCast = async ({ hash, fid }) => {
       }
 
       return Message.toJSON(result.value);
+    })
+    .catch((err) => {
+      console.error(err);
     });
 };
 
