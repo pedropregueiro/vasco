@@ -4,7 +4,7 @@ import { fetchCast as fetchWarpcastCast } from "@/src/hooks/warpcast";
 import Image from "next/image";
 import Link from "next/link";
 
-export const revalidate = 0;
+export const revalidate = 120;
 
 const CastAuthor = ({ cast }) => {
   const author = cast.author;
