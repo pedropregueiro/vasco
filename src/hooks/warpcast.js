@@ -48,3 +48,28 @@ export const fetchUser = async (fid) => {
       throw err;
     });
 };
+
+export const fetchUserThreadCasts = async ({
+  hashPrefix,
+  username,
+  limit = 10,
+}) => {
+  const params = new URLSearchParams({
+    castHashPrefix: hashPrefix,
+    username,
+    limit,
+  });
+
+  return fetch(WARPCAST_API_ENDPOINT + "/user-thread-casts?" + params, {
+    headers: WARPCAST_AUTH_HEADERS,
+  })
+    .then((result) => {
+      return result.json();
+    })
+    .then((data) => {
+      return data.result.casts;
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
