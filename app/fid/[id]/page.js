@@ -4,6 +4,8 @@ import UserCard from "@/src/components/user-card";
 import WarpcastUser from "@/src/components/warpcast-user";
 import HubUser from "@/src/components/hub-user";
 
+export const revalidate = 0;
+
 export default async function Fid({ params }) {
   return (
     <div>

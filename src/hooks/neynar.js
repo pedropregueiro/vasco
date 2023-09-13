@@ -64,6 +64,24 @@ export const fetchUserByUsername = async (username) => {
     });
 };
 
+export const fetchCustodyAddress = async (fid) => {
+  const params = new URLSearchParams({
+    api_key: process.env.NEYNAR_API_KEY,
+    fid,
+  });
+
+  return fetch(NEYNAR_V1_ENDPOINT + "/custody-address?" + params)
+    .then((result) => {
+      return result.json();
+    })
+    .then((data) => {
+      return data.result;
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
 export const fetchV2Casts = async (castHashes) => {
   castHashes.map((castHash) => {
     if (!isHex(castHash)) {
