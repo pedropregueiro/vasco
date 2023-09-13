@@ -20,11 +20,11 @@ export default async function Fid({ params }) {
 
       <div className="two-column-grid">
         <Suspense fallback={<div>Loading...</div>}>
-          <NeynarUser fid={params.id} />
+          <WarpcastUser fid={params.id} />
         </Suspense>
 
         <Suspense fallback={<div>Loading...</div>}>
-          <WarpcastUser fid={params.id} />
+          <NeynarUser fid={params.id} />
         </Suspense>
       </div>
 

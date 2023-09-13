@@ -1,4 +1,4 @@
-import { fetchCast as fetchNeynarCast } from "@/src/hooks/neynar";
+import { fetchCast as fetchNeynarCast, fetchV2Casts } from "@/src/hooks/neynar";
 import { fetchCast as fetchHubCast } from "@/src/hooks/hub";
 import { fetchCast as fetchWarpcastCast } from "@/src/hooks/warpcast";
 import Image from "next/image";
@@ -51,6 +51,7 @@ export default async function Cast({ params }) {
     fid: neynarCast.author.fid,
   });
   const warpcastCast = await fetchWarpcastCast(params.id);
+  const neynarV2Casts = await fetchV2Casts([params.id]);
 
   return (
     <div>
@@ -66,12 +67,16 @@ export default async function Cast({ params }) {
 
       <div className="two-column-grid">
         <div>
-          <h2>Neynar</h2>
-          <pre>{JSON.stringify(neynarCast, null, 2)}</pre>
-        </div>
-        <div>
           <h2>Warpcast</h2>
           <pre>{JSON.stringify(warpcastCast, null, 2)}</pre>
+        </div>
+        <div>
+          <h2>Neynar (v2)</h2>
+          <pre>{JSON.stringify(neynarV2Casts[0], null, 2)}</pre>
+        </div>
+        <div>
+          <h2>Neynar (v1)</h2>
+          <pre>{JSON.stringify(neynarCast, null, 2)}</pre>
         </div>
       </div>
 

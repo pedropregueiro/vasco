@@ -1,6 +1,8 @@
 import { isHex } from "viem";
+import axios from "axios";
 
 const NEYNAR_V1_ENDPOINT = "https://api.neynar.com/v1/farcaster";
+const NEYNAR_V2_ENDPOINT = "https://api.neynar.com/v2/farcaster";
 
 const DEFAULT_PAGE_SIZE = 50;
 
@@ -56,6 +58,41 @@ export const fetchUserByUsername = async (username) => {
     })
     .then((data) => {
       return data.result.user;
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
+export const fetchV2Casts = async (castHashes) => {
+  castHashes.map((castHash) => {
+    if (!isHex(castHash)) {
+      throw new Error(`cast hash is not hex: ${castHash}`);
+    }
+  });
+
+  const options = {
+    method: "GET",
+    url: NEYNAR_V2_ENDPOINT + "/casts?",
+    headers: {
+      "Content-Type": "application/json",
+      api_key: process.env.NEYNAR_API_KEY,
+      accept: "application/json",
+    },
+    data: {
+      casts: castHashes.map((castHash) => {
+        return { hash: castHash };
+      }),
+    },
+  };
+
+  return axios
+    .request(options)
+    .then((response) => {
+      return response.data;
+    })
+    .then((data) => {
+      return data.result.casts;
     })
     .catch((err) => {
       throw err;

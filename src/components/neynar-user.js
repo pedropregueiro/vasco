@@ -5,7 +5,7 @@ const NeynarUser = async ({ fid }) => {
 
   return (
     <div>
-      <h2>Neynar</h2>
+      <h2>Neynar (v1)</h2>
       <pre>{JSON.stringify(user, null, 2)}</pre>
     </div>
   );
