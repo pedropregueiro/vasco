@@ -56,3 +56,50 @@ export const fetchUserSigners = async (fid) => {
     return jsonEvents;
   });
 };
+
+export const fetchHubInfo = async () => {
+  return farcasterClient
+    .getInfo({ dbStats: true })
+    .then((result) => {
+      if (result.isErr()) {
+        throw result.error;
+      }
+
+      return result.value;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const fetchHubSyncStatus = async (peerId = "") => {
+  return farcasterClient
+    .getSyncStatus(peerId)
+    .then((result) => {
+      if (result.isErr()) {
+        throw result.error;
+      }
+
+      return result.value;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const fetchHubSyncIdsByPrefix = async (prefix) => {
+  return farcasterClient
+    .getAllSyncIdsByPrefix({ prefix })
+    .then((result) => {
+      if (result.isErr()) {
+        throw result.error;
+      }
+
+      console.log("result", result);
+
+      return result.value;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
