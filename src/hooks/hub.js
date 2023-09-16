@@ -95,8 +95,6 @@ export const fetchHubSyncIdsByPrefix = async (prefix) => {
         throw result.error;
       }
 
-      console.log("result", result);
-
       return result.value;
     })
     .catch((err) => {

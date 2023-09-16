@@ -1,6 +1,6 @@
 import { getSSLHubRpcClient } from "@farcaster/hub-nodejs";
 import { MutedText } from "./text";
-import { parseParams } from "../utils/hub";
+import { parseParams, parseResult } from "../utils/hub";
 
 export const HubClient = async ({
   rpcEndpoint,
@@ -24,7 +24,9 @@ export const HubClient = async ({
   }
 
   const hubInfo = hubInfoResult.value;
+
   const result = await farcasterClient[methodObject.method](methodParams);
+  const parsedResult = parseResult(methodObject, result);
 
   return (
     <div>
@@ -42,9 +44,7 @@ export const HubClient = async ({
         {result.isErr() ? "Error" : "Result"}
       </h3>
 
-      <pre>
-        {JSON.stringify(result.isErr() ? result.error : result.value, null, 2)}
-      </pre>
+      <pre>{JSON.stringify(parsedResult, null, 2)}</pre>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { hexToBytes, toHex } from "viem";
+import { Message } from "@farcaster/hub-nodejs";
 
 const AVAILABLE_RPC_METHODS = {
   getinfo: {
@@ -11,6 +12,21 @@ const AVAILABLE_RPC_METHODS = {
     title: "GetCast",
     method: "getCast",
     params: ["hash", "fid"],
+    resultClass: Message,
+  },
+  getalluserdatamessagesbyfid: {
+    id: "getalluserdatamessagesbyfid",
+    title: "GetAllUserDataMessagesByFid",
+    method: "getAllUserDataMessagesByFid",
+    params: ["fid"],
+  },
+  getuserdatabyfid: {
+    id: "getuserdatabyfid",
+    title: "GetUserDataByFid",
+    method: "getUserDataByFid",
+    params: ["fid"],
+    resultField: "messages",
+    resultClass: [Message],
   },
 };
 
@@ -49,4 +65,26 @@ export const prettyParams = (methodParams) => {
   return JSON.stringify(prettyParams, null, 2);
 };
 
-export const parseResult = (result) => {};
+export const parseResult = (methodObject, result) => {
+  if (result.isErr()) return result.error;
+  if (!methodObject.resultClass) return result.value;
+
+  const resultField = methodObject.resultField;
+  const resultClass = methodObject.resultClass;
+
+  let resultValue = result.value;
+  // if resultField is set, then we have to get the value from the result
+  if (resultField) {
+    resultValue = result.value[resultField];
+  }
+
+  // if type of resultClass is array, then we have to map over the result
+  if (Array.isArray(resultClass)) {
+    const toUseClass = resultClass[0];
+    return resultValue.map((element) => {
+      return toUseClass.toJSON(element);
+    });
+  }
+
+  return resultClass.toJSON(resultValue);
+};
