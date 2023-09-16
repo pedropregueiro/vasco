@@ -14,16 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         {children}
-        <Analytics
-          beforeSend={(event) => {
-            const url = new URL(event.url);
-            url.searchParams.delete("compare");
-            return {
-              ...event,
-              url: url.toString(),
-            };
-          }}
-        />
+        <Analytics />
       </body>
     </html>
   );
