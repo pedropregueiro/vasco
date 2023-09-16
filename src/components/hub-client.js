@@ -1,11 +1,12 @@
 import { getSSLHubRpcClient } from "@farcaster/hub-nodejs";
 import { MutedText } from "./text";
-import { parseParams, parseResult } from "../utils/hub";
+import { parseResult } from "../utils/hub";
 
 export const HubClient = async ({
   rpcEndpoint,
   methodObject,
   methodParams,
+  hideEndpoint = false,
 }) => {
   const formatter = new Intl.NumberFormat();
 
@@ -36,7 +37,9 @@ export const HubClient = async ({
       <MutedText style={{ marginTop: "0.4rem" }}>
         {hubInfo.peerId} (v{hubInfo.version})
       </MutedText>
-      <MutedText style={{ marginTop: "0.4rem" }}>{rpcEndpoint}</MutedText>
+      {!hideEndpoint && (
+        <MutedText style={{ marginTop: "0.4rem" }}>{rpcEndpoint}</MutedText>
+      )}
 
       <p>{formatter.format(hubInfo.dbStats?.numMessages)} messages</p>
 

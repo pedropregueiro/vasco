@@ -15,8 +15,8 @@ export default async function RPC({ params, searchParams }) {
   const parsedParams = parseParams(rpcMethodObject, searchParams);
   const prettifiedParams = prettyParams(parsedParams);
 
-  const hubs = searchParams.compare.split(",");
-  if (hubs.length >= 5) throw "too many hubs...";
+  const hubs = searchParams.compare?.split(",");
+  if (hubs?.length >= 5) throw "too many hubs...";
 
   return (
     <div>
@@ -31,15 +31,25 @@ export default async function RPC({ params, searchParams }) {
       </div>
 
       <div className="two-column-grid">
-        {hubs.map((hubUrl) => (
+        {hubs ? (
+          hubs.map((hubUrl) => (
+            <HubClient
+              key={hubUrl}
+              rpcEndpoint={hubUrl}
+              methodObject={rpcMethodObject}
+              methodParams={parsedParams}
+              {...searchParams}
+            />
+          ))
+        ) : (
           <HubClient
-            key={hubUrl}
-            rpcEndpoint={hubUrl}
+            rpcEndpoint={process.env.FARCASTER_HUB_RPC_ENDPOINT}
             methodObject={rpcMethodObject}
             methodParams={parsedParams}
+            hideEndpoint={true}
             {...searchParams}
           />
-        ))}
+        )}
       </div>
     </div>
   );
