@@ -12,6 +12,12 @@ const farcasterClient = getSSLHubRpcClient(
   }
 );
 
+export const getClient = (endpoint) => {
+  // if hubEndpoint is set, create new client, otherwise use default
+  if (endpoint) return getSSLHubRpcClient(endpoint, { metadata: false });
+  return farcasterClient;
+};
+
 export const fetchCast = async ({ hash, fid }) => {
   return farcasterClient
     .getCast({ hash: hexToBytes(hash), fid })
@@ -57,8 +63,9 @@ export const fetchUserSigners = async (fid) => {
   });
 };
 
-export const fetchHubInfo = async () => {
-  return farcasterClient
+export const fetchHubInfo = async ({ hubEndpoint = "" }) => {
+  const client = getClient(hubEndpoint);
+  return client
     .getInfo({ dbStats: true })
     .then((result) => {
       if (result.isErr()) {
@@ -69,6 +76,7 @@ export const fetchHubInfo = async () => {
     })
     .catch((err) => {
       console.error(err);
+      throw err;
     });
 };
 

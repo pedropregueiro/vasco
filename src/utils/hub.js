@@ -42,6 +42,8 @@ export const parseRPCMethodString = (methodString) => {
 export const parseParams = (methodObject, params) => {
   const paramObj = {};
   methodObject.params?.forEach((param) => {
+    if (!params[param]) throw "missing param";
+
     let value = params[param];
     if (param == "hash") value = hexToBytes(value);
     if (param == "fid") value = Number(value);

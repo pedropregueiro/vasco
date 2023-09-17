@@ -1,31 +1,37 @@
-import { getSSLHubRpcClient } from "@farcaster/hub-nodejs";
+import { getSSLHubRpcClient, HubError } from "@farcaster/hub-nodejs";
 import { MutedText } from "./text";
 import { parseResult } from "../utils/hub";
+import { DiffToggle } from "./diff-toggle";
+
+const bigNumberFormatter = new Intl.NumberFormat();
 
 export const HubClient = async ({
   rpcEndpoint,
   methodObject,
   methodParams,
+  hubInfo,
+  inSyncStats,
   hideEndpoint = false,
 }) => {
-  const formatter = new Intl.NumberFormat();
-
-  const farcasterClient = getSSLHubRpcClient(rpcEndpoint, {
-    metadata: false,
-  });
-
-  const hubInfoResult = await farcasterClient.getInfo({ dbStats: true });
-  if (hubInfoResult.isErr()) {
+  if (hubInfo.errorMessage) {
     return (
       <div>
         <h2 style={{ color: "#de554f" }}>{rpcEndpoint}</h2>
-        <p>Error: {hubInfoResult.error.message}</p>
+        <p>Error: {hubInfo.errorMessage}</p>
       </div>
     );
   }
 
-  const hubInfo = hubInfoResult.value;
+  const hubNumMessages = hubInfo.dbStats?.numMessages || 0;
 
+  const hubSyncMessageDiff = inSyncStats
+    ? hubNumMessages - inSyncStats.numMessages
+    : 0;
+  const hubSyncPercent = hubSyncMessageDiff / hubInfo.dbStats?.numMessages;
+
+  const farcasterClient = getSSLHubRpcClient(rpcEndpoint, {
+    metadata: false,
+  });
   const result = await farcasterClient[methodObject.method](methodParams);
   const parsedResult = parseResult(methodObject, result);
 
@@ -41,7 +47,24 @@ export const HubClient = async ({
         <MutedText style={{ marginTop: "0.4rem" }}>{rpcEndpoint}</MutedText>
       )}
 
-      <p>{formatter.format(hubInfo.dbStats?.numMessages)} messages</p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "auto 1fr",
+          alignItems: "center",
+          columnGap: "1rem",
+        }}
+      >
+        <p>
+          {bigNumberFormatter.format(hubInfo.dbStats?.numMessages)} messages
+        </p>
+        {hubSyncMessageDiff != 0 && (
+          <DiffToggle
+            diffNumber={hubSyncMessageDiff}
+            diffPercentage={hubSyncPercent}
+          />
+        )}
+      </div>
 
       <h3 style={{ marginTop: "3rem" }}>
         {result.isErr() ? "Error" : "Result"}
