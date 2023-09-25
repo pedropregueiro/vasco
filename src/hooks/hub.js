@@ -129,7 +129,7 @@ export const fetchSignerEvent = async ({ fid, publicKey, toJson = true }) => {
 
 export const fetchAllUserCastMessages = async ({ fid, signer }) => {
   return await farcasterClient
-    .getAllCastMessagesByFid({
+    .getCastsByFid({
       fid: Number(fid),
       reverse: true,
       pageSize: 100,
@@ -160,7 +160,7 @@ export const fetchAllUserCastMessages = async ({ fid, signer }) => {
 
 export const fetchAllUserReactionMessages = async ({ fid, signer }) => {
   return await farcasterClient
-    .getAllReactionMessagesByFid({
+    .getReactionsByFid({
       fid: Number(fid),
       reverse: true,
       pageSize: 100,

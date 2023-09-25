@@ -15,10 +15,12 @@
     "@farcaster/hub-web": "^0.6.3",
     "@vercel/analytics": "^1.0.2",
     "axios": "^1.5.0",
+    "date-fns": "^2.30.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "next": "13.4.19",
     "react": "18.2.0",
+    "react-aria": "^3.28.0",
     "react-dom": "18.2.0",
     "viem": "^1.10.8"
   }

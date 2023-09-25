@@ -1,15 +1,12 @@
 import {
   fetchAllUserCastMessages,
-  fetchAllUserDataMessages,
   fetchAllUserReactionMessages,
   fetchSignerEvent,
 } from "@/src/hooks/hub";
-import { bytesToHex, parseAbiParameters, toBytes, toHex } from "viem";
-import { decodeAbiParameters } from "viem";
-import { bytesToHexString } from "@farcaster/hub-nodejs";
 import { fetchUser } from "@/src/hooks/neynar";
 import { truncateAddress } from "@/src/utils/ethereum";
 import { decodeMetadata } from "@/src/utils/farcaster";
+import { MutedText } from "@/src/components/text";
 
 export const revalidate = 0;
 
@@ -62,12 +59,16 @@ export default async function Signer({ params }) {
 
   const allMessages = await fetchAllUserCastMessages({
     fid,
-    signer: publicKey,
+  });
+  const signerMessages = allMessages.filter((message) => {
+    return message.signer == publicKey;
   });
 
   const allReactions = await fetchAllUserReactionMessages({
     fid,
-    signer: publicKey,
+  });
+  const signerReactions = allReactions.filter((message) => {
+    return message.signer == publicKey;
   });
 
   return (
@@ -89,11 +90,19 @@ export default async function Signer({ params }) {
       <div className="two-column-grid">
         <div style={{ padding: "2rem" }}>
           <h2>Casts</h2>
-          <pre>{JSON.stringify(allMessages, null, 2)}</pre>
+          <MutedText>
+            <span style={{ fontWeight: "bold" }}>{signerMessages.length}</span>{" "}
+            from the last 100 messages
+          </MutedText>
+          <pre>{JSON.stringify(signerMessages, null, 2)}</pre>
         </div>
         <div style={{ padding: "2rem" }}>
           <h2>Reactions</h2>
-          <pre>{JSON.stringify(allReactions, null, 2)}</pre>
+          <MutedText>
+            <span style={{ fontWeight: "bold" }}>{signerReactions.length}</span>{" "}
+            from the last 100 reactions (likes and recasts)
+          </MutedText>
+          <pre>{JSON.stringify(signerReactions, null, 2)}</pre>
         </div>
       </div>
     </div>

@@ -66,7 +66,7 @@ const Signer = async ({ fid, signer, castsCount, reactionsCount }) => {
               </MutedText>
             </div>
           ) : (
-            <div title="No activity">
+            <div title="No activity within last 100 casts and reactions">
               <WarningIcon height="1rem" fill="#ff8c67" />
             </div>
           )}
