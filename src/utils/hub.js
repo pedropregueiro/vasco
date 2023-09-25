@@ -90,3 +90,54 @@ export const parseResult = (methodObject, result) => {
 
   return resultClass.toJSON(resultValue);
 };
+
+const parseValue = async (value) => {
+  // if is type buffer, return hex
+  if (Buffer.isBuffer(value)) return toHex(value);
+  return value;
+};
+
+export const parseHubObject = async (object) => {
+  // for each key, value in the object, parse the value
+  const parsedObject = {};
+
+  for (const [key, value] of Object.entries(object)) {
+    if (ArrayBuffer.isView(value)) {
+      parsedObject[key] = await parseValue(value);
+      continue;
+    }
+
+    // if it's an array, parse each element as an object
+    if (Array.isArray(value)) {
+      const parsedArray = [];
+      for (const element of value) {
+        const parsedElement = await parseHubObject(element);
+        parsedArray.push(parsedElement);
+      }
+
+      parsedObject[key] = parsedArray;
+      continue;
+    }
+
+    // if it's an object, parse it as an object
+    if (typeof value === "object") {
+      const parsedValue = await parseHubObject(value);
+      parsedObject[key] = parsedValue;
+      continue;
+    }
+
+    const parsedValue = await parseValue(value);
+    parsedObject[key] = parsedValue;
+  }
+
+  return parsedObject;
+};
+
+export const parseMessages = async (messages) => {
+  return await Promise.all(
+    messages.map(async (message) => {
+      const parsedObject = await parseHubObject(message);
+      return parsedObject;
+    })
+  );
+};

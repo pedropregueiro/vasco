@@ -3,7 +3,8 @@ import {
   Message,
   OnChainEvent,
 } from "@farcaster/hub-nodejs";
-import { hexToBytes } from "viem";
+import { hexToBytes, toHex } from "viem";
+import { parseHubObject, parseMessages } from "../utils/hub";
 
 const farcasterClient = getSSLHubRpcClient(
   process.env.FARCASTER_HUB_RPC_ENDPOINT,
@@ -48,19 +49,19 @@ export const fetchUserData = async (fid) => {
   });
 };
 
-export const fetchUserSigners = async (fid) => {
-  return farcasterClient.getOnChainSignersByFid({ fid }).then((result) => {
-    if (result.isErr()) {
-      throw result.error;
-    }
+export const fetchUserSigners = async ({ fid }) => {
+  return farcasterClient
+    .getOnChainSignersByFid({ fid: Number(fid) })
+    .then((result) => {
+      if (result.isErr()) {
+        throw result.error;
+      }
 
-    const events = result.value.events;
-    const jsonEvents = events.map((event) => {
-      return OnChainEvent.toJSON(event);
+      return result.value.events;
+    })
+    .then(async (messages) => {
+      return parseMessages(messages);
     });
-
-    return jsonEvents;
-  });
 };
 
 export const fetchHubInfo = async ({ hubEndpoint = "" }) => {
@@ -104,6 +105,84 @@ export const fetchHubSyncIdsByPrefix = async (prefix) => {
       }
 
       return result.value;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const fetchSignerEvent = async ({ fid, publicKey, toJson = true }) => {
+  return farcasterClient
+    .getOnChainSigner({ fid, signer: hexToBytes(publicKey) })
+    .then((result) => {
+      if (result.isErr()) {
+        throw result.error;
+      }
+
+      if (!toJson) return result.value;
+      return OnChainEvent.toJSON(result.value);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const fetchAllUserCastMessages = async ({ fid, signer }) => {
+  return await farcasterClient
+    .getAllCastMessagesByFid({
+      fid: Number(fid),
+      reverse: true,
+      pageSize: 100,
+    })
+    .then((result) => {
+      if (result.isErr()) {
+        throw result.error;
+      }
+
+      return result.value.messages;
+    })
+    .then(async (messages) => {
+      return parseMessages(messages);
+    })
+    .then((parsedMessages) => {
+      if (signer) {
+        return parsedMessages.filter((message) => {
+          return message.signer == signer;
+        });
+      }
+
+      return parsedMessages;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const fetchAllUserReactionMessages = async ({ fid, signer }) => {
+  return await farcasterClient
+    .getAllReactionMessagesByFid({
+      fid: Number(fid),
+      reverse: true,
+      pageSize: 100,
+    })
+    .then((result) => {
+      if (result.isErr()) {
+        throw result.error;
+      }
+
+      return result.value.messages;
+    })
+    .then(async (messages) => {
+      return parseMessages(messages);
+    })
+    .then((parsedMessages) => {
+      if (signer) {
+        return parsedMessages.filter((message) => {
+          return message.signer == signer;
+        });
+      }
+
+      return parsedMessages;
     })
     .catch((err) => {
       console.error(err);

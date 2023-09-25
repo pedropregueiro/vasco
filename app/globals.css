@@ -37,3 +37,16 @@ pre {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.three-column-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 2rem;
+  padding: 2rem;
+}
+
+@media (max-width: 767px) {
+  .three-column-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

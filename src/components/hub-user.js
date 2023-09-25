@@ -2,7 +2,7 @@ import { fetchUserData, fetchUserSigners } from "@/src/hooks/hub";
 
 const HubUser = async ({ fid }) => {
   const userData = await fetchUserData(fid);
-  const userSigners = await fetchUserSigners(fid);
+  const userSigners = await fetchUserSigners({ fid });
 
   return (
     <div className="two-column-grid">
