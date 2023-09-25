@@ -60,7 +60,7 @@ export default async function Signers({ params }) {
       </div>
 
       <div style={{ padding: "2rem" }}>
-        <h2>All signers</h2>
+        <h2>Raw data</h2>
         <pre>{JSON.stringify(signers, null, 2)}</pre>
       </div>
     </div>
