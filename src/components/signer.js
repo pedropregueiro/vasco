@@ -59,10 +59,16 @@ const Signer = async ({ fid, signer, castsCount, reactionsCount }) => {
           {isSignerActive ? (
             <div style={{ textAlign: "right" }}>
               <MutedText title="From last 100 casts">
-                Casts {percentageFormatter.format(castPercentage)}
+                Casts{" "}
+                {isNaN(castPercentage)
+                  ? "—"
+                  : percentageFormatter.format(castPercentage)}
               </MutedText>
               <MutedText title="From last 100 reactions">
-                Reactions {percentageFormatter.format(reactionPercentage)}
+                Reactions{" "}
+                {isNaN(reactionPercentage)
+                  ? "—"
+                  : percentageFormatter.format(reactionPercentage)}
               </MutedText>
             </div>
           ) : (
