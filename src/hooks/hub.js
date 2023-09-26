@@ -1,10 +1,6 @@
-import {
-  getSSLHubRpcClient,
-  Message,
-  OnChainEvent,
-} from "@farcaster/hub-nodejs";
-import { hexToBytes, toHex } from "viem";
-import { parseHubObject, parseMessages } from "../utils/hub";
+import { getSSLHubRpcClient } from "@farcaster/hub-nodejs";
+import { hexToBytes } from "viem";
+import { parseHubObject, parseHubObjects } from "../utils/hub";
 
 const farcasterClient = getSSLHubRpcClient(
   process.env.FARCASTER_HUB_RPC_ENDPOINT,
@@ -27,7 +23,7 @@ export const fetchCast = async ({ hash, fid }) => {
         throw result.error;
       }
 
-      return Message.toJSON(result.value);
+      return parseHubObject(result.value);
     })
     .catch((err) => {
       console.error(err);
@@ -41,11 +37,7 @@ export const fetchUserData = async (fid) => {
     }
 
     const messages = result.value.messages;
-    const jsonMessages = messages.map((message) => {
-      return Message.toJSON(message);
-    });
-
-    return jsonMessages;
+    return parseHubObjects(messages);
   });
 };
 
@@ -60,7 +52,7 @@ export const fetchUserSigners = async ({ fid }) => {
       return result.value.events;
     })
     .then(async (messages) => {
-      return parseMessages(messages);
+      return parseHubObjects(messages);
     });
 };
 
@@ -73,7 +65,7 @@ export const fetchHubInfo = async ({ hubEndpoint = "" }) => {
         throw result.error;
       }
 
-      return result.value;
+      return parseHubObject(result.value);
     })
     .catch((err) => {
       console.error(err);
@@ -89,7 +81,7 @@ export const fetchHubSyncStatus = async (peerId = "") => {
         throw result.error;
       }
 
-      return result.value;
+      return parseHubObject(result.value);
     })
     .catch((err) => {
       console.error(err);
@@ -111,7 +103,7 @@ export const fetchHubSyncIdsByPrefix = async (prefix) => {
     });
 };
 
-export const fetchSignerEvent = async ({ fid, publicKey, toJson = true }) => {
+export const fetchSignerEvent = async ({ fid, publicKey }) => {
   return farcasterClient
     .getOnChainSigner({ fid, signer: hexToBytes(publicKey) })
     .then((result) => {
@@ -119,8 +111,7 @@ export const fetchSignerEvent = async ({ fid, publicKey, toJson = true }) => {
         throw result.error;
       }
 
-      if (!toJson) return result.value;
-      return OnChainEvent.toJSON(result.value);
+      return parseHubObject(result.value);
     })
     .catch((err) => {
       console.error(err);
@@ -142,7 +133,7 @@ export const fetchAllUserCastMessages = async ({ fid, signer }) => {
       return result.value.messages;
     })
     .then(async (messages) => {
-      return parseMessages(messages);
+      return parseHubObjects(messages);
     })
     .then((parsedMessages) => {
       if (signer) {
@@ -173,7 +164,7 @@ export const fetchAllUserReactionMessages = async ({ fid, signer }) => {
       return result.value.messages;
     })
     .then(async (messages) => {
-      return parseMessages(messages);
+      return parseHubObjects(messages);
     })
     .then((parsedMessages) => {
       if (signer) {

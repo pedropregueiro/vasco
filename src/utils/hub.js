@@ -75,7 +75,7 @@ export const prettyParams = (methodParams) => {
   return JSON.stringify(prettyParams, null, 2);
 };
 
-export const parseResult = (methodObject, result) => {
+export const parseResult = async (methodObject, result) => {
   if (result.isErr()) return result.error;
   if (!methodObject.resultClass) return result.value;
 
@@ -90,13 +90,10 @@ export const parseResult = (methodObject, result) => {
 
   // if type of resultClass is array, then we have to map over the result
   if (Array.isArray(resultClass)) {
-    const toUseClass = resultClass[0];
-    return resultValue.map((element) => {
-      return toUseClass.toJSON(element);
-    });
+    return await parseHubObjects(resultValue);
   }
 
-  return resultClass.toJSON(resultValue);
+  return await parseHubObject(resultValue);
 };
 
 const parseValue = async (value) => {
@@ -141,11 +138,10 @@ export const parseHubObject = async (object) => {
   return parsedObject;
 };
 
-export const parseMessages = async (messages) => {
+export const parseHubObjects = async (objects) => {
   return await Promise.all(
-    messages.map(async (message) => {
-      const parsedObject = await parseHubObject(message);
-      return parsedObject;
+    objects.map(async (o) => {
+      return await parseHubObject(o);
     })
   );
 };

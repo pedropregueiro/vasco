@@ -46,7 +46,6 @@ export default async function Signer({ params }) {
   const signerEvent = await fetchSignerEvent({
     fid: Number(fid),
     publicKey,
-    toJson: false,
   });
 
   if (!signerEvent) throw "no signer event found";

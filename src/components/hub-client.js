@@ -33,7 +33,7 @@ export const HubClient = async ({
     metadata: false,
   });
   const result = await farcasterClient[methodObject.method](methodParams);
-  const parsedResult = parseResult(methodObject, result);
+  const parsedResult = await parseResult(methodObject, result);
 
   return (
     <div>
