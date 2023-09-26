@@ -45,6 +45,12 @@ pre {
   padding: 2rem;
 }
 
+@media (max-width: 1000px) {
+  .three-column-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 767px) {
   .three-column-grid {
     grid-template-columns: minmax(0, 1fr);

@@ -7,6 +7,7 @@ import {
 import Signer from "@/src/components/signer";
 import { Suspense } from "react";
 import UserCard from "@/src/components/user-card";
+import { sortBy } from "@/src/utils/array";
 
 export const revalidate = 0;
 
@@ -16,6 +17,11 @@ export default async function Signers({ params }) {
   const signers = await fetchUserSigners({ fid });
   const casts = await fetchAllUserCastMessages({ fid });
   const reactions = await fetchAllUserReactionMessages({ fid });
+
+  const sortedSigners = sortBy(
+    { value: (s) => s.blockTimestamp },
+    Object.values(signers)
+  );
 
   return (
     <div>
@@ -32,7 +38,7 @@ export default async function Signers({ params }) {
       </div>
 
       <div className="three-column-grid">
-        {signers.map((signer) => (
+        {sortedSigners.map((signer) => (
           <Suspense
             key={signer?.signerEventBody?.key}
             fallback={

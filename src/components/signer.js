@@ -8,6 +8,7 @@ import {
   fetchAllUserReactionMessages,
 } from "../hooks/hub";
 import { MutedText } from "./text";
+import FormattedDate from "./formatted-date";
 
 const percentageFormatter = new Intl.NumberFormat("en", {
   style: "percent",
@@ -15,6 +16,7 @@ const percentageFormatter = new Intl.NumberFormat("en", {
 });
 
 const Signer = async ({ fid, signer, castsCount, reactionsCount }) => {
+  const signerCreatedApprox = signer?.blockTimestamp * 1000;
   const publicKey = signer?.signerEventBody?.key;
   const metadata = signer?.signerEventBody?.metadata;
   const parsedMetadata = decodeMetadata(metadata);
@@ -77,11 +79,14 @@ const Signer = async ({ fid, signer, castsCount, reactionsCount }) => {
           )}
         </div>
 
-        <p style={{ fontWeight: "bold", margin: "0.2rem" }}>
+        <p style={{ fontWeight: "bold", margin: "0.2rem 0" }}>
           {appFidInfo.displayName}{" "}
           <span style={{ fontWeight: "normal" }}>(@{appFidInfo.username})</span>
         </p>
-        <p style={{ margin: "0.2rem" }}>{appFidInfo.profile.bio.text}</p>
+        <p style={{ margin: "0.2rem 0" }}>{appFidInfo.profile.bio.text}</p>
+        <MutedText style={{ marginTop: "1rem" }}>
+          Added on <FormattedDate value={signerCreatedApprox} />
+        </MutedText>
       </div>
     </Link>
   );
