@@ -7,7 +7,6 @@ import {
   fetchAllUserCastMessages,
   fetchAllUserReactionMessages,
 } from "../hooks/hub";
-import { CastIcon, LikeIcon, WarningIcon } from "./icons";
 import { MutedText } from "./text";
 
 const percentageFormatter = new Intl.NumberFormat("en", {
@@ -58,13 +57,13 @@ const Signer = async ({ fid, signer, castsCount, reactionsCount }) => {
           <h3>{truncateAddress(publicKey)}</h3>
           {isSignerActive ? (
             <div style={{ textAlign: "right" }}>
-              <MutedText title="From last 100 casts">
+              <MutedText title="Of the last 100 casts">
                 Casts{" "}
                 {isNaN(castPercentage)
                   ? "—"
                   : percentageFormatter.format(castPercentage)}
               </MutedText>
-              <MutedText title="From last 100 reactions">
+              <MutedText title="Of the last 100 reactions">
                 Reactions{" "}
                 {isNaN(reactionPercentage)
                   ? "—"
@@ -72,9 +71,9 @@ const Signer = async ({ fid, signer, castsCount, reactionsCount }) => {
               </MutedText>
             </div>
           ) : (
-            <div title="No activity within last 100 casts and reactions">
-              <WarningIcon height="1rem" fill="#ff8c67" />
-            </div>
+            <MutedText title="Of the last 100 casts and reactions">
+              No recent activity
+            </MutedText>
           )}
         </div>
 

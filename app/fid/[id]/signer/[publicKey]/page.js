@@ -92,7 +92,7 @@ export default async function Signer({ params }) {
           <h2>Casts</h2>
           <MutedText>
             <span style={{ fontWeight: "bold" }}>{signerMessages.length}</span>{" "}
-            from the last 100 messages
+            of the last 100 messages
           </MutedText>
           <pre>{JSON.stringify(signerMessages, null, 2)}</pre>
         </div>
@@ -100,7 +100,7 @@ export default async function Signer({ params }) {
           <h2>Reactions</h2>
           <MutedText>
             <span style={{ fontWeight: "bold" }}>{signerReactions.length}</span>{" "}
-            from the last 100 reactions (likes and recasts)
+            of the last 100 reactions (likes and recasts)
           </MutedText>
           <pre>{JSON.stringify(signerReactions, null, 2)}</pre>
         </div>
