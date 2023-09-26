@@ -1,5 +1,5 @@
 import { hexToBytes, toHex } from "viem";
-import { Message } from "@farcaster/hub-nodejs";
+import { Message, OnChainEvent } from "@farcaster/hub-nodejs";
 
 const AVAILABLE_RPC_METHODS = {
   getinfo: {
@@ -27,6 +27,14 @@ const AVAILABLE_RPC_METHODS = {
     params: ["fid"],
     resultField: "messages",
     resultClass: [Message],
+  },
+  getonchainsignersbyfid: {
+    id: "getonchainsignersbyfid",
+    title: "GetOnChainSignersByFid",
+    method: "getOnChainSignersByFid",
+    params: ["fid"],
+    resultField: "events",
+    resultClass: [OnChainEvent],
   },
 };
 
