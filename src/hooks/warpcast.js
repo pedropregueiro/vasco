@@ -42,6 +42,10 @@ export const fetchUser = async (fid) => {
       return result.json();
     })
     .then((data) => {
+      if (data.errors) {
+        return data;
+      }
+
       return data.result.user;
     })
     .catch((err) => {
