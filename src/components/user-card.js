@@ -13,13 +13,15 @@ const UserCard = async ({ fid }) => {
           alignItems: "center",
         }}
       >
-        <Image
-          style={{ borderRadius: "50%" }}
-          src={neynarUser.pfp.url}
-          alt="pfp"
-          width={50}
-          height={50}
-        />
+        {neynarUser?.pfp?.url != null && (
+          <Image
+            style={{ borderRadius: "50%" }}
+            src={neynarUser.pfp?.url}
+            alt="pfp"
+            width={50}
+            height={50}
+          />
+        )}
         <div>
           <p style={{ fontWeight: "bold", margin: "0.2rem" }}>
             {neynarUser.displayName}{" "}
