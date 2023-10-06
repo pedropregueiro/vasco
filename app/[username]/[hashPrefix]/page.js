@@ -5,7 +5,7 @@ export default async function Warpcast({ params }) {
   const { hashPrefix, username } = params;
 
   // fetch first cast to get full cast hash
-  const casts = await fetchUserThreadCasts({ hashPrefix, username, limit: 2 });
+  const casts = await fetchUserThreadCasts({ hashPrefix, username, limit: 10 });
 
   // Warpcast has some odd root cast in threads within a channel
   const probableCasts = casts.filter((cast) =>
