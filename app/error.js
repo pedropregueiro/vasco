@@ -1,6 +1,11 @@
 "use client";
 
 export default function Error({ error, reset }) {
+  let { message } = error;
+  if (process.env.NODE_ENV === "production") {
+    message = error.digest;
+  }
+
   return (
     <div
       style={{
@@ -14,7 +19,7 @@ export default function Error({ error, reset }) {
     >
       <h2>Oops, something went wrong!</h2>
       <div>
-        <pre>{JSON.stringify(error?.message || error, null, 2)}</pre>
+        <pre>{JSON.stringify(message, null, 2)}</pre>
       </div>
     </div>
   );

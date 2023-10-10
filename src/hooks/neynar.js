@@ -37,7 +37,7 @@ export const fetchUser = async (fid) => {
       return result.json();
     })
     .then((data) => {
-      return data.result.user;
+      return data.result?.user;
     })
     .catch((err) => {
       throw err;

@@ -4,6 +4,10 @@ import Image from "next/image";
 const UserCard = async ({ fid }) => {
   const neynarUser = await fetchNeynarUser(fid);
 
+  if (!neynarUser) {
+    return <div></div>;
+  }
+
   return (
     <div>
       <div
