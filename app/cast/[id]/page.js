@@ -47,13 +47,37 @@ const CastBody = ({ cast }) => {
 };
 
 export default async function Cast({ params }) {
-  const neynarCast = await fetchNeynarCast(params.id);
-  const hubCast = await fetchHubCast({
-    hash: params.id,
-    fid: neynarCast.author.fid,
-  });
-  const warpcastCast = await fetchWarpcastCast(params.id);
-  const neynarV2Casts = await fetchV2Casts([params.id]);
+  let neynarCast;
+  let hubCast;
+  let warpcastCast;
+  let neynarV2Cast;
+
+  try {
+    neynarCast = await fetchNeynarCast(params.id);
+  } catch (e) {
+    neynarCast = e.message;
+  }
+
+  try {
+    hubCast = await fetchHubCast({
+      hash: params.id,
+      fid: neynarCast.author.fid,
+    });
+  } catch (e) {
+    hubCast = e.message;
+  }
+  try {
+    warpcastCast = await fetchWarpcastCast(params.id);
+  } catch (e) {
+    warpcastCast = e.message;
+  }
+
+  try {
+    let neynarV2Casts = await fetchV2Casts([params.id]);
+    neynarV2Cast = neynarV2Casts[0];
+  } catch (e) {
+    neynarV2Cast = e.message;
+  }
 
   return (
     <div>
@@ -63,8 +87,14 @@ export default async function Cast({ params }) {
           backgroundColor: "rgb(245, 243, 228)",
         }}
       >
-        <CastAuthor cast={neynarCast} />
-        <CastBody cast={neynarCast} />
+        {!neynarCast?.author ? (
+          <p>Cast not found</p>
+        ) : (
+          <>
+            <CastAuthor cast={neynarCast} />
+            <CastBody cast={neynarCast} />
+          </>
+        )}
       </div>
 
       <div className="two-column-grid">
@@ -74,7 +104,7 @@ export default async function Cast({ params }) {
         </div>
         <div>
           <h2>Neynar (v2)</h2>
-          <pre>{JSON.stringify(neynarV2Casts[0], null, 2)}</pre>
+          <pre>{JSON.stringify(neynarV2Cast, null, 2)}</pre>
         </div>
         <div>
           <h2>Neynar (v1)</h2>

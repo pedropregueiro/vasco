@@ -16,18 +16,16 @@ export const fetchCast = async (castHash) => {
     hash: castHash,
   });
 
-  return fetch(WARPCAST_API_ENDPOINT + "/cast?" + params, {
+  const response = await fetch(WARPCAST_API_ENDPOINT + "/cast?" + params, {
     headers: WARPCAST_AUTH_HEADERS,
-  })
-    .then((result) => {
-      return result.json();
-    })
-    .then((data) => {
-      return data.result.cast;
-    })
-    .catch((err) => {
-      throw err;
-    });
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.errors[0].message);
+  }
+
+  return data.result.cast;
 };
 
 export const fetchUser = async (fid) => {

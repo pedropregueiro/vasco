@@ -16,22 +16,20 @@ export const fetchCast = async (castHash) => {
     hash: castHash,
   });
 
-  return fetch(NEYNAR_V1_ENDPOINT + "/cast?" + params)
-    .then((result) => {
-      return result.json();
-    })
-    .then((data) => {
-      return data.result.cast;
-    })
-    .catch((err) => {
-      throw err;
-    });
+  const response = await fetch(NEYNAR_V1_ENDPOINT + "/cast?" + params);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+  return data.result.cast;
 };
 
 export const fetchUser = async (fid) => {
   const params = new URLSearchParams({
     api_key: process.env.NEYNAR_API_KEY,
-    fid,
+    fid: Number(fid),
   });
 
   return fetch(NEYNAR_V1_ENDPOINT + "/user?" + params)
@@ -110,6 +108,9 @@ export const fetchV2Casts = async (castHashes) => {
       return response.data;
     })
     .then((data) => {
+      if (data.status == 400) {
+        throw new Error(data.message);
+      }
       return data.result.casts;
     })
     .catch((err) => {
