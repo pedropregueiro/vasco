@@ -1,8 +1,16 @@
-import { fetchCast as fetchNeynarCast, fetchV2Casts } from "@/src/hooks/neynar";
-import { fetchCast as fetchHubCast } from "@/src/hooks/hub";
+import {
+  fetchCast as fetchNeynarCast,
+  fetchUser,
+  fetchV2Casts,
+} from "@/src/hooks/neynar";
+import { fetchCast as fetchHubCast, fetchSignerEvent } from "@/src/hooks/hub";
 import { fetchCast as fetchWarpcastCast } from "@/src/hooks/warpcast";
 import Image from "next/image";
 import Link from "next/link";
+import { decodeMetadata } from "@/src/utils/farcaster";
+import { truncateAddress } from "@/src/utils/ethereum";
+import UserCard from "@/src/components/user-card";
+import { MutedText } from "@/src/components/text";
 
 export const revalidate = 120;
 
@@ -79,21 +87,57 @@ export default async function Cast({ params }) {
     neynarV2Cast = e.message;
   }
 
+  let appFidInfo;
+
+  try {
+    const fid = neynarCast?.author.fid;
+    const publicKey = hubCast?.signer;
+
+    const signerEvent = await fetchSignerEvent({
+      fid: Number(fid),
+      publicKey,
+    });
+
+    if (!signerEvent) console.warn("no signer event found for", publicKey);
+
+    const metadata = signerEvent?.signerEventBody?.metadata;
+    const parsedMetadata = decodeMetadata(metadata);
+
+    const appFid = parsedMetadata[0].requestFid;
+    appFidInfo = await fetchUser(appFid);
+  } catch (e) {
+    console.error("problem fetching app info", e);
+  }
+
   return (
     <div>
       <div
         style={{
           padding: "2rem",
           backgroundColor: "rgb(245, 243, 228)",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          justifyContent: "space-between",
+          alignItems: "start",
         }}
       >
-        {!neynarCast?.author ? (
-          <p>Cast not found</p>
-        ) : (
-          <>
-            <CastAuthor cast={neynarCast} />
-            <CastBody cast={neynarCast} />
-          </>
+        <div>
+          {!neynarCast?.author ? (
+            <p>Cast not found</p>
+          ) : (
+            <>
+              <CastAuthor cast={neynarCast} />
+              <CastBody cast={neynarCast} />
+            </>
+          )}
+        </div>
+        {appFidInfo && (
+          <div>
+            <MutedText>Cast signed by:</MutedText>
+            <Link href={`/fid/${fid}/signer/${publicKey}`}>
+              <UserCard fid={appFid} />
+            </Link>
+          </div>
         )}
       </div>
 

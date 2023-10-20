@@ -7,6 +7,7 @@ import { fetchUser } from "@/src/hooks/neynar";
 import { truncateAddress } from "@/src/utils/ethereum";
 import { decodeMetadata } from "@/src/utils/farcaster";
 import { MutedText } from "@/src/components/text";
+import UserCard from "@/src/components/user-card";
 
 export const revalidate = 0;
 
@@ -79,11 +80,7 @@ export default async function Signer({ params }) {
         }}
       >
         <h2>{truncateAddress(publicKey)}</h2>
-        <p style={{ fontWeight: "bold", margin: "0.2rem" }}>
-          {appFidInfo.displayName}{" "}
-          <span style={{ fontWeight: "normal" }}>(@{appFidInfo.username})</span>
-        </p>
-        <p style={{ margin: "0.2rem" }}>{appFidInfo.profile.bio.text}</p>
+        <UserCard fid={appFid} />
       </div>
 
       <div className="two-column-grid">
