@@ -88,11 +88,12 @@ export default async function Cast({ params }) {
   }
 
   let appFidInfo;
+  const fid = neynarCast?.author?.fid;
+  let publicKey;
+  let appFid;
 
   try {
-    const fid = neynarCast?.author.fid;
-    const publicKey = hubCast?.signer;
-
+    publicKey = hubCast?.signer;
     const signerEvent = await fetchSignerEvent({
       fid: Number(fid),
       publicKey,
@@ -103,7 +104,7 @@ export default async function Cast({ params }) {
     const metadata = signerEvent?.signerEventBody?.metadata;
     const parsedMetadata = decodeMetadata(metadata);
 
-    const appFid = parsedMetadata[0].requestFid;
+    appFid = parsedMetadata[0].requestFid;
     appFidInfo = await fetchUser(appFid);
   } catch (e) {
     console.error("problem fetching app info", e);
