@@ -179,3 +179,20 @@ export const fetchAllUserReactionMessages = async ({ fid, signer }) => {
       console.error(err);
     });
 };
+
+export const fetchFidByAddress = async (address) => {
+  return await farcasterClient
+    .getIdRegistryOnChainEventByAddress({
+      address: hexToBytes(address),
+    })
+    .then((result) => {
+      if (result.isErr()) {
+        throw result.error;
+      }
+
+      return result.value.fid;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
