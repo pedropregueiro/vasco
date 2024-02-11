@@ -5,7 +5,7 @@ import { DiffToggle } from "./diff-toggle";
 
 const bigNumberFormatter = new Intl.NumberFormat();
 
-export const HubClient = async ({
+export const HubRpcClient = async ({
   rpcEndpoint,
   methodObject,
   methodParams,

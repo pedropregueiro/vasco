@@ -1,23 +1,27 @@
-import { hexToBytes } from "viem";
-// import { parseHubObject, parseHubObjects } from "../utils/hub";
+export const hubFetch = async ({ path, options, endpoint }) => {
+  options = options || { headers: { "content-type": "application/json" } };
 
-const hubFetch = async (url, options) => {
-  const headers = {
-    api_key: process.env.NEYNAR_API_KEY,
-  };
-  const response = await fetch(
-    `${process.env.FARCASTER_HUB_HTTP_ENDPOINT}${url}`,
-    {
-      ...options,
-      headers,
+  if (endpoint) {
+    if (endpoint.includes("neynar")) {
+      options.headers["api_key"] = process.env.NEYNAR_API_KEY;
     }
-  );
+
+    if (!endpoint.includes("v1")) {
+      endpoint = endpoint + "/v1";
+    }
+  } else {
+    options.headers["api_key"] = process.env.NEYNAR_API_KEY;
+  }
+
+  const baseEndpoint = endpoint || process.env.FARCASTER_HUB_HTTP_ENDPOINT;
+
+  const response = await fetch(`${baseEndpoint}${path}`, options);
   const data = await response.json();
 
   if (!response.ok) {
     console.error(data);
     return Promise.reject(
-      new Error(`${response.status} ${response.statusText}`)
+      new Error(`${response.status} ${data.message ?? data.details}`)
     );
   }
 
@@ -32,7 +36,7 @@ export const fetchSignerEvents = async ({ fid, publicKey }) => {
   if (publicKey) {
     params.set("signer", publicKey);
   }
-  return hubFetch("/onChainSignersByFid?" + params);
+  return hubFetch({ path: "/onChainSignersByFid?" + params });
 };
 
 export const fetchCast = async ({ fid, hash }) => {
@@ -41,7 +45,7 @@ export const fetchCast = async ({ fid, hash }) => {
     hash: hash,
   });
 
-  return hubFetch("/castById?" + params);
+  return hubFetch({ path: "/castById?" + params });
 };
 
 export const fetchUserData = async (fid) => {
@@ -49,7 +53,7 @@ export const fetchUserData = async (fid) => {
     fid: Number(fid),
   });
 
-  return hubFetch("/userDataByFid?" + params);
+  return hubFetch({ path: "/userDataByFid?" + params });
 };
 
 export const fetchUserSigners = async ({ fid }) => {
@@ -62,58 +66,9 @@ export const fetchUserSigners = async ({ fid }) => {
     });
 };
 
-// TODO: replace this with http later
-// export const fetchHubInfo = async ({ hubEndpoint = "" }) => {
-//   const client = getClient(hubEndpoint);
-//   return client
-//     .getInfo({ dbStats: true })
-//     .then((result) => {
-//       if (result.isErr()) {
-//         throw result.error;
-//       }
-
-//       return parseHubObject(result.value);
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       throw err;
-//     });
-// };
-
-// export const fetchHubSyncStatus = async (peerId = "") => {
-//   return farcasterClient
-//     .getSyncStatus(peerId)
-//     .then((result) => {
-//       if (result.isErr()) {
-//         throw result.error;
-//       }
-
-//       return parseHubObject(result.value);
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//     });
-// };
-
-// export const fetchHubSyncIdsByPrefix = async (prefix) => {
-//   return farcasterClient
-//     .getAllSyncIdsByPrefix({ prefix })
-//     .then((result) => {
-//       if (result.isErr()) {
-//         throw result.error;
-//       }
-
-//       return result.value;
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//     });
-// };
-
-// export const fetchSignerEvent = async ({ fid, publicKey }) => {
-//   return
-
-// }
+export const fetchHubInfo = async ({ hubEndpoint }) => {
+  return hubFetch({ path: "/info?dbstats=1", endpoint: hubEndpoint });
+};
 
 export const fetchAllUserCastMessages = async ({ fid, signer }) => {
   const params = new URLSearchParams({
@@ -122,7 +77,7 @@ export const fetchAllUserCastMessages = async ({ fid, signer }) => {
     pageSize: 100,
   });
 
-  return hubFetch("/castsByFid?" + params)
+  return hubFetch({ path: "/castsByFid?" + params })
     .then((data) => data.messages)
     .then((casts) => {
       if (signer) {
@@ -145,7 +100,7 @@ export const fetchAllUserReactionMessages = async ({ fid, signer }) => {
     pageSize: 100,
   });
 
-  return hubFetch("/reactionsByFid?" + params)
+  return hubFetch({ path: "/reactionsByFid?" + params })
     .then((data) => data.messages)
     .then((reactions) => {
       if (signer) {
@@ -166,7 +121,7 @@ export const fetchFidByAddress = async (address) => {
     address,
   });
 
-  return hubFetch("/onChainIdRegistryEventByAddress?" + params)
+  return hubFetch({ path: "/onChainIdRegistryEventByAddress?" + params })
     .then((data) => {
       return data.fid;
     })

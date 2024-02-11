@@ -1,23 +1,24 @@
-import { HubRpcClient } from "@/src/components/hub-rpc-client";
 import { MutedText } from "@/src/components/text";
+import { parseHttpPathString } from "@/src/utils/hub";
 import { fetchHubInfo } from "@/src/hooks/hub";
-import {
-  parseParams,
-  parseRPCMethodString,
-  prettyParams,
-} from "@/src/utils/hub";
+import { parseParams, prettyParams } from "@/src/utils/hub";
+import { HubHttpClient } from "@/src/components/hub-http-client";
 
 export const revalidate = 0;
 
-export default async function RPC({ params, searchParams }) {
-  const { rpcMethod } = params;
+export default async function HTTP({ params, searchParams }) {
+  const { path } = params;
 
-  const rpcMethodObject = parseRPCMethodString(rpcMethod);
+  const httpMethodObject = parseHttpPathString(path);
   const parsedParams = parseParams({
-    methodObject: rpcMethodObject,
+    methodObject: httpMethodObject,
     params: searchParams,
+    rpc: false,
   });
-  const prettifiedParams = prettyParams({ methodParams: parsedParams });
+  const prettifiedParams = prettyParams({
+    methodParams: parsedParams,
+    rpc: false,
+  });
 
   const hubs = searchParams.compare?.split(",");
   if (hubs?.length >= 5) throw "too many hubs...";
@@ -54,17 +55,17 @@ export default async function RPC({ params, searchParams }) {
           backgroundColor: "rgb(245, 243, 228)",
         }}
       >
-        <h2>{rpcMethodObject.title}</h2>
+        <h2>{httpMethodObject.title}</h2>
         <MutedText>args: {prettifiedParams}</MutedText>
       </div>
 
       <div className="two-column-grid">
         {hubs ? (
           hubs.map((hubUrl, index) => (
-            <HubRpcClient
+            <HubHttpClient
               key={hubUrl}
-              rpcEndpoint={hubUrl}
-              methodObject={rpcMethodObject}
+              httpEndpoint={hubUrl}
+              methodObject={httpMethodObject}
               methodParams={parsedParams}
               inSyncStats={mostSyncedHubStats}
               hubInfo={hubsInfo[index]}
@@ -72,9 +73,9 @@ export default async function RPC({ params, searchParams }) {
             />
           ))
         ) : (
-          <HubRpcClient
-            rpcEndpoint={process.env.FARCASTER_HUB_RPC_ENDPOINT}
-            methodObject={rpcMethodObject}
+          <HubHttpClient
+            httpEndpoint={process.env.FARCASTER_HUB_HTTP_ENDPOINT}
+            methodObject={httpMethodObject}
             methodParams={parsedParams}
             hideEndpoint={true}
             hubInfo={hubsInfo[0]}

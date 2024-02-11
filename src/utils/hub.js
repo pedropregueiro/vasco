@@ -1,6 +1,27 @@
 import { hexToBytes, toHex } from "viem";
 import { Message, OnChainEvent } from "@farcaster/hub-nodejs";
 
+const AVAILABLE_HTTP_METHODS = {
+  info: {
+    id: "info",
+    title: "Info",
+    path: "/info?dbstats=1",
+    params: [],
+  },
+  castbyid: {
+    id: "castById",
+    title: "CastById",
+    path: "/castById",
+    params: ["hash", "fid"],
+  },
+  userdatabyfid: {
+    id: "userdatabyfid",
+    title: "UserDataByFid",
+    path: "/userDataByFid",
+    params: ["fid"],
+  },
+};
+
 const AVAILABLE_RPC_METHODS = {
   getinfo: {
     id: "getinfo",
@@ -38,6 +59,15 @@ const AVAILABLE_RPC_METHODS = {
   },
 };
 
+export const parseHttpPathString = (pathString) => {
+  const methodObj = AVAILABLE_HTTP_METHODS[pathString.toLowerCase()];
+  if (!methodObj) {
+    throw "invalid http method";
+  }
+
+  return methodObj;
+};
+
 export const parseRPCMethodString = (methodString) => {
   const methodObj = AVAILABLE_RPC_METHODS[methodString.toLowerCase()];
   if (!methodObj) {
@@ -47,13 +77,14 @@ export const parseRPCMethodString = (methodString) => {
   return methodObj;
 };
 
-export const parseParams = (methodObject, params) => {
+export const parseParams = ({ methodObject, params, rpc = true }) => {
   const paramObj = {};
+
   methodObject.params?.forEach((param) => {
     if (!params[param]) throw "missing param";
 
     let value = params[param];
-    if (param == "hash") value = hexToBytes(value);
+    if (param == "hash" && rpc) value = hexToBytes(value);
     if (param == "fid") value = Number(value);
 
     paramObj[param] = value;
@@ -62,11 +93,11 @@ export const parseParams = (methodObject, params) => {
   return paramObj;
 };
 
-export const prettyParams = (methodParams) => {
+export const prettyParams = ({ methodParams, rpc = true }) => {
   let prettyParams = {};
   for (const [key, value] of Object.entries(methodParams)) {
     let prettyValue = value;
-    if (key == "hash") prettyValue = toHex(value);
+    if (key == "hash" && rpc) prettyValue = toHex(value);
     if (key == "fid") prettyValue = Number(value);
 
     prettyParams[key] = prettyValue;

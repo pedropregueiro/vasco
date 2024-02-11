@@ -74,9 +74,9 @@ export default function Home() {
             />
 
             <HomeCard
-              title="GetInfo (RPC)"
-              subtitle="/rpc/:method"
-              link="/rpc/getInfo"
+              title="/info (HTTP)"
+              subtitle="/http/:path"
+              link="/http/info"
             />
           </div>
         </div>
