@@ -3,7 +3,7 @@ import {
   fetchUser,
   fetchV2Casts,
 } from "@/src/hooks/neynar";
-import { fetchCast as fetchHubCast, fetchSignerEvent } from "@/src/hooks/hub";
+import { fetchCast as fetchHubCast, fetchSignerEvents } from "@/src/hooks/hub";
 import { fetchCast as fetchWarpcastCast } from "@/src/hooks/warpcast";
 import Image from "next/image";
 import Link from "next/link";
@@ -94,7 +94,7 @@ export default async function Cast({ params }) {
 
   try {
     publicKey = hubCast?.signer;
-    const signerEvent = await fetchSignerEvent({
+    const signerEvent = await fetchSignerEvents({
       fid: Number(fid),
       publicKey,
     });

@@ -20,7 +20,7 @@ const Signer = async ({ fid, signer, castsCount, reactionsCount }) => {
   const publicKey = signer?.signerEventBody?.key;
   const metadata = signer?.signerEventBody?.metadata;
   const parsedMetadata = decodeMetadata(metadata);
-  const appFid = parsedMetadata[0].requestFid;
+  const appFid = parsedMetadata?.[0].requestFid;
   const appFidInfo = await fetchUser(appFid);
 
   const signerMessages = await fetchAllUserCastMessages({

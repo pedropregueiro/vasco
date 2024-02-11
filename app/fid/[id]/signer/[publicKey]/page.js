@@ -1,7 +1,7 @@
 import {
   fetchAllUserCastMessages,
   fetchAllUserReactionMessages,
-  fetchSignerEvent,
+  fetchSignerEvents,
 } from "@/src/hooks/hub";
 import { fetchUser } from "@/src/hooks/neynar";
 import { truncateAddress } from "@/src/utils/ethereum";
@@ -44,7 +44,7 @@ const KEY_METADATA_TYPE = [
 export default async function Signer({ params }) {
   const { id: fid, publicKey } = params;
 
-  const signerEvent = await fetchSignerEvent({
+  const signerEvent = await fetchSignerEvents({
     fid: Number(fid),
     publicKey,
   });
