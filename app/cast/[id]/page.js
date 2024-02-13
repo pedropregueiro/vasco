@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   fetchCast as fetchNeynarCast,
   fetchUser,
@@ -12,11 +13,18 @@ import { truncateAddress } from "@/src/utils/ethereum";
 import UserCard from "@/src/components/user-card";
 import { MutedText } from "@/src/components/text";
 
-export const revalidate = 120;
+export const revalidate = 0;
+
+const KNOWN_HUBS = [
+  { hub: "Farcaster (Nemes)", endpoint: "https://nemes.farcaster.xyz:2281" },
+  { hub: "Neynar", endpoint: "https://api.neynar.com:2281" },
+  { hub: "Pinata", endpoint: "https://hub.pinata.cloud" },
+  { hub: "Farcaster (Lamia)", endpoint: "https://lamia.farcaster.xyz:2281" },
+  // { hub: "NodeRPC", endpoint: "https://www.noderpc.xyz/farcaster-mainnet-hub" },
+];
 
 const CastAuthor = ({ cast }) => {
   const author = cast.author;
-  const warpcastAuthorLink = `https://warpcast.com/${author.username}`;
 
   return (
     <div
@@ -67,14 +75,6 @@ export default async function Cast({ params }) {
   }
 
   try {
-    hubCast = await fetchHubCast({
-      hash: params.id,
-      fid: neynarCast.author.fid,
-    });
-  } catch (e) {
-    hubCast = e.message;
-  }
-  try {
     warpcastCast = await fetchWarpcastCast(params.id);
   } catch (e) {
     warpcastCast = e.message;
@@ -110,6 +110,38 @@ export default async function Cast({ params }) {
     console.error("problem fetching app info", e);
   }
 
+  let hubsResponses;
+
+  try {
+    hubsResponses = await Promise.all(
+      KNOWN_HUBS.map(async (hub) => {
+        try {
+          const hubResponse = await fetchHubCast({
+            hash: params.id,
+            fid: neynarCast?.author?.fid,
+            endpoint: hub.endpoint,
+          });
+
+          return {
+            title: hub.hub,
+            endpoint: hub.endpoint,
+            response: hubResponse,
+          };
+        } catch (e) {
+          return {
+            title: hub.hub,
+            endpoint: hub.endpoint,
+            response: e,
+            errorMessage: e.message,
+            ...e,
+          };
+        }
+      })
+    );
+  } catch (e) {
+    console.error("problem fetching hub response", e);
+  }
+
   return (
     <div>
       <div
@@ -141,7 +173,6 @@ export default async function Cast({ params }) {
           </div>
         )}
       </div>
-
       <div className="two-column-grid">
         <div>
           <h2>Warpcast</h2>
@@ -157,9 +188,27 @@ export default async function Cast({ params }) {
         </div>
       </div>
 
-      <div style={{ padding: "2rem" }}>
-        <h2>Hub (GetCast)</h2>
-        <pre>{JSON.stringify(hubCast, null, 2)}</pre>
+      <div className="two-column-grid">
+        {hubsResponses.map((hubResponse) => (
+          <Suspense
+            key={hubResponse?.endpoint}
+            fallback={<div>Loading...</div>}
+          >
+            <div>
+              <h2 style={{ marginBottom: "0rem" }}>{hubResponse.title}</h2>
+              <MutedText>{hubResponse.endpoint}</MutedText>
+              <pre>
+                {JSON.stringify(
+                  hubResponse.errorMessage
+                    ? hubResponse.response?.message
+                    : hubResponse.response,
+                  null,
+                  2
+                )}
+              </pre>
+            </div>
+          </Suspense>
+        ))}
       </div>
     </div>
   );

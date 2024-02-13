@@ -39,13 +39,13 @@ export const fetchSignerEvents = async ({ fid, publicKey }) => {
   return hubFetch({ path: "/onChainSignersByFid?" + params });
 };
 
-export const fetchCast = async ({ fid, hash }) => {
+export const fetchCast = async ({ fid, hash, options, endpoint }) => {
   const params = new URLSearchParams({
     fid: Number(fid),
     hash: hash,
   });
 
-  return hubFetch({ path: "/castById?" + params });
+  return hubFetch({ path: "/castById?" + params, options, endpoint });
 };
 
 export const fetchUserData = async (fid) => {
