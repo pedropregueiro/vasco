@@ -55,7 +55,7 @@ export const fetchUserByUsername = async (username) => {
       return result.json();
     })
     .then((data) => {
-      return data.result.user;
+      return data.result?.user;
     })
     .catch((err) => {
       throw err;
