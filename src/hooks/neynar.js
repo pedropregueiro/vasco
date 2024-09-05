@@ -89,16 +89,14 @@ export const fetchV2Casts = async (castHashes) => {
 
   const options = {
     method: "GET",
-    url: NEYNAR_V2_ENDPOINT + "/casts?",
+    url:
+      NEYNAR_V2_ENDPOINT +
+      "/casts?" +
+      new URLSearchParams({ casts: castHashes.join(",") }),
     headers: {
       "Content-Type": "application/json",
       api_key: process.env.NEYNAR_API_KEY,
       accept: "application/json",
-    },
-    data: {
-      casts: castHashes.map((castHash) => {
-        return { hash: castHash };
-      }),
     },
   };
 
