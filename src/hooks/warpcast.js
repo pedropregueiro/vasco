@@ -13,19 +13,22 @@ export const fetchCast = async (castHash) => {
   }
 
   const params = new URLSearchParams({
-    hash: castHash,
+    castHash,
   });
 
-  const response = await fetch(WARPCAST_API_ENDPOINT + "/cast?" + params, {
-    headers: WARPCAST_AUTH_HEADERS,
-  });
+  const response = await fetch(
+    WARPCAST_API_ENDPOINT + "/thread-casts?" + params,
+    {
+      headers: WARPCAST_AUTH_HEADERS,
+    }
+  );
 
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.errors[0].message);
   }
 
-  return data.result.cast;
+  return data.result.casts?.[0];
 };
 
 export const fetchUser = async (fid) => {

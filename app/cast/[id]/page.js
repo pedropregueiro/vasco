@@ -9,7 +9,6 @@ import { fetchCast as fetchWarpcastCast } from "@/src/hooks/warpcast";
 import Image from "next/image";
 import Link from "next/link";
 import { decodeMetadata } from "@/src/utils/farcaster";
-import { truncateAddress } from "@/src/utils/ethereum";
 import UserCard from "@/src/components/user-card";
 import { MutedText } from "@/src/components/text";
 
@@ -18,8 +17,8 @@ export const revalidate = 0;
 const KNOWN_HUBS = [
   { hub: "Farcaster (Nemes)", endpoint: "https://nemes.farcaster.xyz:2281" },
   { hub: "Neynar", endpoint: "https://api.neynar.com:2281" },
-  { hub: "Pinata", endpoint: "https://hub.pinata.cloud" },
-  { hub: "Farcaster (Lamia)", endpoint: "https://lamia.farcaster.xyz:2281" },
+  // { hub: "Pinata", endpoint: "https://hub.pinata.cloud" },
+  // { hub: "Farcaster (Lamia)", endpoint: "https://lamia.farcaster.xyz:2281" },
   // { hub: "NodeRPC", endpoint: "https://www.noderpc.xyz/farcaster-mainnet-hub" },
 ];
 
