@@ -11,18 +11,19 @@ import Link from "next/link";
 import { decodeMetadata } from "@/src/utils/farcaster";
 import UserCard from "@/src/components/user-card";
 import { MutedText } from "@/src/components/text";
+import HubResponse from "@/src/components/hub-response";
 
 export const revalidate = 0;
 
 const KNOWN_HUBS = [
   { hub: "Farcaster (Nemes)", endpoint: "https://nemes.farcaster.xyz:2281" },
   { hub: "Neynar", endpoint: "https://api.neynar.com:2281" },
-  // { hub: "Pinata", endpoint: "https://hub.pinata.cloud" },
-  // { hub: "Farcaster (Lamia)", endpoint: "https://lamia.farcaster.xyz:2281" },
+  { hub: "Pinata", endpoint: "https://hub.pinata.cloud" },
+  { hub: "Farcaster (Lamia)", endpoint: "https://lamia.farcaster.xyz:2281" },
   // { hub: "NodeRPC", endpoint: "https://www.noderpc.xyz/farcaster-mainnet-hub" },
 ];
 
-const CastAuthor = ({ cast }) => {
+export const CastAuthor = ({ cast }) => {
   const author = cast.author;
 
   return (
@@ -81,9 +82,18 @@ export default async function Cast({ params }) {
 
   try {
     let neynarV2Casts = await fetchV2Casts([params.id]);
-    neynarV2Cast = neynarV2Casts[0];
+    neynarV2Cast = neynarV2Casts?.[0];
   } catch (e) {
     neynarV2Cast = e.message;
+  }
+
+  try {
+    hubCast = await fetchHubCast({
+      hash: params.id,
+      fid: neynarCast.author.fid,
+    });
+  } catch (e) {
+    hubCast = e.message;
   }
 
   let appFidInfo;
@@ -103,42 +113,10 @@ export default async function Cast({ params }) {
     const metadata = signerEvent?.signerEventBody?.metadata;
     const parsedMetadata = decodeMetadata(metadata);
 
-    appFid = parsedMetadata[0].requestFid;
+    appFid = parsedMetadata?.[0].requestFid;
     appFidInfo = await fetchUser(appFid);
   } catch (e) {
     console.error("problem fetching app info", e);
-  }
-
-  let hubsResponses;
-
-  try {
-    hubsResponses = await Promise.all(
-      KNOWN_HUBS.map(async (hub) => {
-        try {
-          const hubResponse = await fetchHubCast({
-            hash: params.id,
-            fid: neynarCast?.author?.fid,
-            endpoint: hub.endpoint,
-          });
-
-          return {
-            title: hub.hub,
-            endpoint: hub.endpoint,
-            response: hubResponse,
-          };
-        } catch (e) {
-          return {
-            title: hub.hub,
-            endpoint: hub.endpoint,
-            response: e,
-            errorMessage: e.message,
-            ...e,
-          };
-        }
-      })
-    );
-  } catch (e) {
-    console.error("problem fetching hub response", e);
   }
 
   return (
@@ -188,24 +166,13 @@ export default async function Cast({ params }) {
       </div>
 
       <div className="two-column-grid">
-        {hubsResponses.map((hubResponse) => (
-          <Suspense
-            key={hubResponse?.endpoint}
-            fallback={<div>Loading...</div>}
-          >
-            <div>
-              <h2 style={{ marginBottom: "0rem" }}>{hubResponse.title}</h2>
-              <MutedText>{hubResponse.endpoint}</MutedText>
-              <pre>
-                {JSON.stringify(
-                  hubResponse.errorMessage
-                    ? hubResponse.response?.message
-                    : hubResponse.response,
-                  null,
-                  2
-                )}
-              </pre>
-            </div>
+        {KNOWN_HUBS.map((hub) => (
+          <Suspense key={hub?.endpoint} fallback={<div>Loading...</div>}>
+            <HubResponse
+              castHash={params.id}
+              fid={neynarCast?.author?.fid}
+              hub={hub}
+            />
           </Suspense>
         ))}
       </div>
