@@ -36,7 +36,7 @@ export const CastAuthor = ({ cast }) => {
     >
       <Image
         style={{ borderRadius: "50%" }}
-        src={author.pfp.url}
+        src={author.avatar_url}
         alt="pfp"
         width={40}
         height={40}
