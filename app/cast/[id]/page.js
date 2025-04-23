@@ -44,8 +44,8 @@ export const CastAuthor = ({ cast }) => {
       <div>
         <Link href={`/fid/${author.fid}`}>
           <p style={{ fontWeight: "bold", margin: "0.2rem" }}>
-            {author.displayName}{" "}
-            <span style={{ fontWeight: "normal" }}>(@{author.username})</span>
+            {author.display_name}{" "}
+            <span style={{ fontWeight: "normal" }}>(@{author.fname})</span>
           </p>
         </Link>
       </div>

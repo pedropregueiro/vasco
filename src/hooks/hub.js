@@ -96,6 +96,7 @@ export const fetchAllUserCastMessages = async ({ fid, signer }) => {
 export const fetchAllUserReactionMessages = async ({ fid, signer }) => {
   const params = new URLSearchParams({
     fid: Number(fid),
+    reaction_type: "None",
     reverse: true,
     pageSize: 100,
   });

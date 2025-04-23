@@ -58,8 +58,8 @@ export default async function Signers({ params }) {
             <Signer
               fid={fid}
               signer={signer}
-              castsCount={casts.length}
-              reactionsCount={reactions.length}
+              castsCount={casts?.length}
+              reactionsCount={reactions?.length}
             />
           </Suspense>
         ))}

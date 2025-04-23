@@ -44,18 +44,21 @@ const KEY_METADATA_TYPE = [
 export default async function Signer({ params }) {
   const { id: fid, publicKey } = params;
 
-  const signerEvent = await fetchSignerEvents({
+  const signerEvents = await fetchSignerEvents({
     fid: Number(fid),
     publicKey,
   });
 
-  if (!signerEvent) throw "no signer event found";
+  if (!signerEvents) throw "no signer event found";
+
+  const signerEvent = signerEvents.events.find((e) => {
+    return e.signerEventBody?.key == publicKey;
+  });
 
   const metadata = signerEvent?.signerEventBody?.metadata;
   const parsedMetadata = decodeMetadata(metadata);
 
   const appFid = parsedMetadata[0].requestFid;
-  const appFidInfo = await fetchUser(appFid);
 
   const allMessages = await fetchAllUserCastMessages({
     fid,

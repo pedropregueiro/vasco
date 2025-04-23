@@ -79,14 +79,20 @@ const Signer = async ({ fid, signer, castsCount, reactionsCount }) => {
           )}
         </div>
 
-        <p style={{ fontWeight: "bold", margin: "0.2rem 0" }}>
-          {appFidInfo.displayName}{" "}
-          <span style={{ fontWeight: "normal" }}>(@{appFidInfo.username})</span>
-        </p>
-        <p style={{ margin: "0.2rem 0" }}>{appFidInfo.profile.bio.text}</p>
-        <MutedText style={{ marginTop: "1rem" }}>
-          Added on <FormattedDate value={signerCreatedApprox} />
-        </MutedText>
+        {appFidInfo && (
+          <>
+            <p style={{ fontWeight: "bold", margin: "0.2rem 0" }}>
+              {appFidInfo?.displayName}{" "}
+              <span style={{ fontWeight: "normal" }}>
+                (@{appFidInfo.username})
+              </span>
+            </p>
+            <p style={{ margin: "0.2rem 0" }}>{appFidInfo.profile.bio.text}</p>
+            <MutedText style={{ marginTop: "1rem" }}>
+              Added on <FormattedDate value={signerCreatedApprox} />
+            </MutedText>
+          </>
+        )}
       </div>
     </Link>
   );
