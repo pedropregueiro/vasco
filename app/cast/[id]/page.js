@@ -1,9 +1,5 @@
 import { Suspense } from "react";
-import {
-  fetchCast as fetchNeynarCast,
-  fetchUser,
-  fetchV2Casts,
-} from "@/src/hooks/neynar";
+import { fetchUser, fetchV2Casts } from "@/src/hooks/neynar";
 import { fetchCast as fetchHubCast, fetchSignerEvents } from "@/src/hooks/hub";
 import { fetchCast as fetchWarpcastCast } from "@/src/hooks/warpcast";
 import Image from "next/image";
@@ -67,12 +63,6 @@ export default async function Cast({ params }) {
   let hubCast;
   let warpcastCast;
   let neynarV2Cast;
-
-  try {
-    neynarCast = await fetchNeynarCast(params.id);
-  } catch (e) {
-    neynarCast = e.message;
-  }
 
   try {
     warpcastCast = await fetchWarpcastCast(params.id);
@@ -156,12 +146,8 @@ export default async function Cast({ params }) {
           <pre>{JSON.stringify(warpcastCast, null, 2)}</pre>
         </div>
         <div>
-          <h2>Neynar (v2)</h2>
+          <h2>Neynar</h2>
           <pre>{JSON.stringify(neynarV2Cast, null, 2)}</pre>
-        </div>
-        <div>
-          <h2>Neynar (v1)</h2>
-          <pre>{JSON.stringify(neynarCast, null, 2)}</pre>
         </div>
       </div>
 
